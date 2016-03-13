@@ -1,0 +1,6 @@
+{
+  "projects": [ "src", "test", "sample/service1", "sample/service2" ],
+  "sdk": {
+    "version": "1.0.0-rc1-update1"
+  }
+}
