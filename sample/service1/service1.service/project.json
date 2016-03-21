@@ -22,8 +22,7 @@
       "dependencies": {
         "NLog": "4.2.3"
       }
-    },
-    "dnxcore50": { }
+    }
   },
 
   "exclude": [
