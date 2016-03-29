@@ -9,6 +9,7 @@
     "net451": { }
   },
   "dependencies": {
-    "miseco": "1.0.0-*"
+    "miseco": "1.0.0-*",
+    "xunit": "2.2.0-beta1-build3239"
   }
 }
