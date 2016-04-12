@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -18,20 +17,16 @@ namespace MiSeCo
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            // add other framework services
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
-            var frames = new StackTrace().GetFrames();
-            var assembly = GetServiceAssembly();
+            Assembly assembly = GetServiceAssembly();
 
             containerBuilder.RegisterAssemblyTypes(assembly)
-                   .Where(t => t.GetInterfaces().Contains(typeof(IContractInterface)))
-                   .AsImplementedInterfaces();
-
-            //containerBuilder.RegisterModule<DefaultModule>();
+                    .Where(t => t.GetInterfaces().Contains(typeof(IContractInterface)))
+                    .AsImplementedInterfaces();
             containerBuilder.Populate(services);
-            var container = containerBuilder.Build();
+            IContainer container = containerBuilder.Build();
             return container.Resolve<IServiceProvider>();
         }
 

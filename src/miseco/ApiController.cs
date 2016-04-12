@@ -15,28 +15,28 @@ namespace MiSeCo
             _services = services;
         }
 
-        [HttpGet]
-        [Route("")]
-        public string Services()
+        [HttpPost]
+        [Route("invokeMethod")]
+        public object Services([FromBody] InvocationApiModel model)
         {
-            var service = _services.First(s => s.GetType().Name == "Service1");
-            var methodInfo = service.GetType().GetMethods().First(m => m.Name == "Add");
-            if (methodInfo != null)
+            IContractInterface service = _services.FirstOrDefault(s => s.GetType().Name == model.ServiceName);
+            if (service == null) throw new Exception($"Service {model.ServiceName} could not be found");
+
+            MethodInfo methodInfo = service.GetType().GetMethods().First(m => m.Name == model.MethodName);
+            if (methodInfo == null) throw new Exception($"Method {model.MethodName} not found in service {model.ServiceName}");
+
+            var methodParameters = methodInfo.GetParameters();
+            if (methodParameters.Length == 0) methodInfo.Invoke(service, null);
+
+            if (methodParameters.Length != model.Parameters.Length) throw new Exception($"Wrong number of parameters for method {model.ServiceName}.{model.MethodName}");
+            var parameters = new List<object>();
+            for (int i = 0; i < methodParameters.Length; i++)
             {
-                var parameters = methodInfo.GetParameters();
-                
-                if (parameters.Length == 0)
-                {
-                    // This works fine
-                    methodInfo.Invoke(service, null);
-                }
-                else
-                {
-                    object[] parametersArray = { 2, 2 };         
-                    return methodInfo.Invoke(service, parametersArray).ToString();
-                }
+                object value = Convert.ChangeType(model.Parameters[i], methodParameters[i].ParameterType);
+                parameters.Add(value);
             }
-            return "error";
+
+            return methodInfo.Invoke(service, parameters.ToArray());
         }
     }
 }

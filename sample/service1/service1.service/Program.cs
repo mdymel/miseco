@@ -5,13 +5,13 @@ namespace MiSeCo.Sample.Service1.Service
 {
     public class Program
     {
-        public class Startup : MisecoStartup
+    public class Startup : MisecoStartup
+    {
+        public override Assembly GetServiceAssembly()
         {
-            public override Assembly GetServiceAssembly()
-            {
-                return Assembly.GetExecutingAssembly();
-            }
+            return Assembly.GetExecutingAssembly();
         }
+    }
 
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
