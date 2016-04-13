@@ -19,7 +19,7 @@ namespace MiSeCo
         [Route("invokeMethod")]
         public object Services([FromBody] InvocationApiModel model)
         {
-            IContractInterface service = _services.FirstOrDefault(s => s.GetType().Name == model.ServiceName);
+            IContractInterface service = _services.FirstOrDefault(s => s.GetType().GetInterfaces().Any(i => i.Name == model.ServiceName));
             if (service == null) throw new Exception($"Service {model.ServiceName} could not be found");
 
             MethodInfo methodInfo = service.GetType().GetMethods().First(m => m.Name == model.MethodName);
