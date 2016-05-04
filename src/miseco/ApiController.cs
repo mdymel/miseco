@@ -6,13 +6,15 @@ using Microsoft.AspNet.Mvc;
 
 namespace MiSeCo
 {
-    public class ApiController : Controller
+    internal class ApiController : Controller
     {
         private readonly IEnumerable<IContractInterface> _services;
+        private readonly IServiceRegistry _serviceRegistry;
 
-        public ApiController(IEnumerable<IContractInterface> services)
+        public ApiController(IEnumerable<IContractInterface> services, IServiceRegistry serviceRegistry)
         {
             _services = services;
+            _serviceRegistry = serviceRegistry;
         }
 
         [HttpPost]
@@ -37,6 +39,13 @@ namespace MiSeCo
             }
 
             return methodInfo.Invoke(service, parameters.ToArray());
+        }
+
+        [HttpPost]
+        [Route("registerService")]
+        public void RegisterService([FromBody] ServiceInformation serviceInformation)
+        {
+            _serviceRegistry.RegisterService(serviceInformation);
         }
     }
 }

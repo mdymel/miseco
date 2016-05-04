@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable ConsiderUsingConfigureAwait
@@ -25,12 +26,12 @@ namespace MiSeCo
             containerBuilder.RegisterAssemblyTypes(assembly)
                     .Where(t => t.GetInterfaces().Contains(typeof(IContractInterface)))
                     .AsImplementedInterfaces();
+            containerBuilder.RegisterType<ServicesRegistry>().AsImplementedInterfaces();
             containerBuilder.Populate(services);
             IContainer container = containerBuilder.Build();
             return container.Resolve<IServiceProvider>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
             app.UseMvc();
